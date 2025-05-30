@@ -27,7 +27,7 @@ export const useCalculator = () => {
     }, [number]);
 
     useEffect(() => {
-        const subResult = calculateResult();
+        const subResult = calculateSubresult();
         setPrevNumber(`${subResult}`)
     }, [formula]);
 
@@ -70,8 +70,8 @@ export const useCalculator = () => {
 
 
     const setLastNumber = () => {
-        // calculate result
-
+        calculateResult();
+        
         if (number.endsWith('.')) {
             setPrevNumber(number.slice(0, -1));
         }
@@ -100,7 +100,7 @@ export const useCalculator = () => {
         lastOperation.current = Operator.add;
     }
 
-    const calculateResult = () => {
+    const calculateSubresult = () => {
         const [firstValue, operation, secondValue] = formula.split(' ');
 
         const num1 = Number(firstValue);
@@ -121,6 +121,13 @@ export const useCalculator = () => {
                 throw new Error(`Operation ${operation} not implemented`);
         }
     }
+
+    const calculateResult = () => {
+        const result = calculateSubresult();
+        setFormula(`${result}`);       
+        lastOperation.current = undefined;
+        setPrevNumber('0')
+    };
 
     const buildNumber = (numberString: string) => {
         // verificar si ya existe el punto decimal
@@ -165,6 +172,7 @@ export const useCalculator = () => {
         substractOperation,
         addOperation,
 
+        calculateSubresult,
         calculateResult,
     }
 }
